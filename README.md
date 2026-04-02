@@ -283,18 +283,21 @@ docker run -it --name ubuntu2 -v my-vol:/app/data ubuntu bash
 민감정보는 마스킹했습니다. 실제 로컬에서는 본인 이름·이메일이 설정되어 있습니다.
 
 ```bash
-git config --global user.name "Your Name"
-git config --global user.email "***@***"
-git config --global init.defaultBranch main
-git config --list --show-origin
-# file:.../gitconfig  user.name=Your Name
-# file:.../gitconfig  user.email=***@***
-# file:.../gitconfig  init.defaultbranch=main
-# file:.../.git/config remote.origin.url=https://github.com/Daeung-03/Codyssey1st_rookie.git
+hugeung@gimdaeung-ui-MacBookAir Codyssey1st_rookie % git config --list
+credential.helper=osxkeychain
+user.name=Daeung-03
+user.email=eodnd74@yonsei.ac.kr
+credential.helper=store
+core.autocrlf=input
+core.editor=code
+init.defaultbranch=main
+
+hugeung@gimdaeung-ui-MacBookAir Codyssey1st_rookie % git remote -v
+origin  https://github.com/Daeung-03/Codyssey_rookieQ1.git (fetch)
+origin  https://github.com/Daeung-03/Codyssey_rookieQ1.git (push)
 ```
 
-- **GitHub 연동:** 위 원격 URL로 push/pull 가능한 상태. VS Code에서 GitHub 계정 로그인 후 동일 저장소를 클론·연동 완료.
-- **스크린샷:** 과제 제출 시 VS Code 계정/원격 연결 화면을 캡처해 저장소의 `docs/`(또는 `assets/`)에 넣고, 이 README에 `![VS Code GitHub](docs/vscode-github.png)` 형태로 링크하면 명세의 “첨부”를 충족하기 쉽습니다. **토큰·비밀번호·개인키는 이미지에 노출하지 않습니다.**
+
 
 ---
 
