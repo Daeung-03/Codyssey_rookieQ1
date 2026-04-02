@@ -196,3 +196,53 @@ root         1  0.0  0.0   4300  3612 pts/0    Ss   08:36   0:00 /bin/bash
 root        18  0.0  0.0   7632  3656 pts/0    R+   08:37   0:00 ps aux
 
 위 로그에서 확인할 수 있듯이 attach는 지금 메인스트림(실행중인 컨테이너)를 내 터미널로 바꾸는 것, exec 보조 프로세스를 생성하는 것이다. 따라서 종료 시에 차이가 있음.
+
+## 4. 도커 볼륨 영속성
+hugeung@gimdaeung-ui-MacBookAir my_webserver % docker create my-vol
+Unable to find image 'my-vol:latest' locally
+Error response from daemon: pull access denied for my-vol, repository does not exist or may require 'docker login'
+hugeung@gimdaeung-ui-MacBookAir my_webserver % docker volume create my-vol
+my-vol
+hugeung@gimdaeung-ui-MacBookAir my_webserver % docker volume ls
+DRIVER    VOLUME NAME
+local     my-vol
+hugeung@gimdaeung-ui-MacBookAir my_webserver % docker run -it --name ubuntu1 -v my-vol:/app/data ubuntu bash
+root@b3cecd1600d5:/# mkdir -p app/data
+root@b3cecd1600d5:/# echo hello > /app/data/test.txt
+root@b3cecd1600d5:/# cat /app/data/test.txt
+hello
+root@b3cecd1600d5:/# exit
+exit
+hugeung@gimdaeung-ui-MacBookAir my_webserver % docker rm ubuntu1
+ubuntu1
+hugeung@gimdaeung-ui-MacBookAir my_webserver % docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+hugeung@gimdaeung-ui-MacBookAir my_webserver % docker volume ls
+DRIVER    VOLUME NAME
+local     my-vol
+hugeung@gimdaeung-ui-MacBookAir my_webserver % docker run -it --name ubuntu2 -v my-vol:app/data ubuntu bash
+docker: Error response from daemon: invalid volume specification: 'my-vol:app/data': invalid mount config for type "volume": invalid mount path: 'app/data' mount path must be absolute
+
+Run 'docker run --help' for more information
+hugeung@gimdaeung-ui-MacBookAir my_webserver % docker run -it --name ubuntu2 -v my-vol:/app/data ubuntu bash
+root@a6eb5346156e:/# cat app/data/test.txt
+hello
+
+## 5. 도커 Bind Mouunt
+hugeung@gimdaeung-ui-MacBookAir practice % echo "version1" > ~/msg.txt          
+hugeung@gimdaeung-ui-MacBookAir practice % cat msg.txt
+cat: msg.txt: No such file or directory
+hugeung@gimdaeung-ui-MacBookAir practice % cat ~/msg.txt
+version1
+hugeung@gimdaeung-ui-MacBookAir practice % docker run -it --name bind-demo -v ~/:/app/data ubuntu bash
+root@ab2d61d39efa:/# cat /app/data/msg.txt
+version1
+root@ab2d61d39efa:/# cat /app/data/msg.txt
+version2
+
+(다른 터미널)
+hugeung@gimdaeung-ui-MacBookAir Codyssey1st_rookie % cd practice 
+hugeung@gimdaeung-ui-MacBookAir practice % echo "version2" > ~/msg.txt
+
+root@ab2d61d39efa:/# cat /app/data/msg.txt
+version2

@@ -49,4 +49,4 @@ hugeung@gimdaeung-ui-MacBookAir ~ % docker run -d -p 8080:80 --name web-test1 my
 2533ec825f4a07fd91983dd52404bb4cdf90a6982988146175c38245c7ab4c64
 
 컨테이너는 격리된 네트워크 안에 있어서, 외부(호스트)에서 접근하려면 호스트 포트와 컨테이너 포트를 연결(매핑) 해줘야 합니다.
--p 옵션으로 가능 
+-p 옵션으로 가능
