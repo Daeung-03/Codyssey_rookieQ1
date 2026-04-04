@@ -278,13 +278,14 @@ credential.helper=osxkeychain
 user.name=Daeung-03
 user.email=eodnd74@yonsei.ac.kr
 credential.helper=store
+core.autocrlf=input
+core.editor=code
+init.defaultbranch=main
 
 hugeung@gimdaeung-ui-MacBookAir Codyssey1st_rookie % git remote -v
 origin  https://github.com/Daeung-03/Codyssey_rookieQ1.git (fetch)
 origin  https://github.com/Daeung-03/Codyssey_rookieQ1.git (push)
 ```
-
-
 ---
 
 ## 8. 저장소 구조 (제출물)
