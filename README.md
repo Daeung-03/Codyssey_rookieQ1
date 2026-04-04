@@ -2,13 +2,11 @@
 
 2026 코디세이 AI 올인원 교육과정 입학연수과정 문제1 저장소입니다. 터미널·Docker·Git을 CLI로 다루고, Dockerfile 기반 웹 서버 컨테이너, 포트 매핑, 바인드 마운트·볼륨, GitHub 연동까지 **실행 결과(로그)**로 검증한 내용을 정리합니다.
 
-
-
 ---
 
 ## 1. 프로젝트 개요 (미션 목표 요약)
 
-- **환경 세팅이 개발의 시작:** 리눅스 CLI, Docker(컨테이너), Git/GitHub(버전 관리·협업)을 함께 사용해 재현 가능한 실행 환경을 만듭니다.
+- **환경 세팅이 개발의 시작:** 리눅스 CLI, Docker(컨테이너), Git/GitHub(버전 관리·협업)을 함께 사용해 재현 가능한 실행 환경을 만듭니다. 이 때 사용되는 커맨드를 익힙니다.
 - **이번 저장소에서 한 일:** 작업 디렉터리·권한 정리 → Docker 설치·점검 및 컨테이너 운영 → **기존 `nginx` 베이스** 위에 정적 웹을 올린 **커스텀 이미지** 빌드 → **포트 매핑**으로 호스트에서 접속 확인 → **바인드 마운트**(호스트 변경 반영)와 **Docker 볼륨**(컨테이너 삭제 후에도 데이터 유지) 검증 → Git 설정 및 GitHub 연동.
 - **구조적 관점:** 이미지와 컨테이너 분리, 격리된 네트워크에서 **포트·스토리지 연결**이 필요한 이유를 로그와 함께 설명합니다.
 
@@ -83,21 +81,14 @@ curl -s http://localhost:8081
 
 ## 5. 트러블슈팅 (2건 이상)
 
-### 5.1 `docker create my-vol` 로 볼륨을 만들려다 실패
-
-- **문제:** `Unable to find image 'my-vol:latest' locally` — 볼륨 이름을 이미지 이름으로 해석함.
-- **원인 가설:** `docker create`는 기본적으로 **이미지로부터 컨테이너 생성**용이며, 볼륨 생성 명령이 아님.
-- **확인:** 공식 도움말·에러 메시지에서 이미지 pull 시도로 동작함을 확인.
-- **해결:** 명시적으로 `docker volume create my-vol` 사용. ([logs/docker.md](logs/docker.md) §4)
-
-### 5.2 볼륨 마운트 경로를 상대경로로 줘서 실패
+### 5.1 볼륨 마운트 경로를 상대경로로 줘서 실패
 
 - **문제:** `-v my-vol:app/data` → `mount path must be absolute`.
 - **원인 가설:** 컨테이너 쪽 마운트 포인트는 **절대 경로**여야 함.
 - **확인:** 에러 메시지에 `invalid mount path` 표시.
 - **해결:** `-v my-vol:/app/data`처럼 컨테이너 경로를 `/`로 시작하게 수정. ([logs/docker.md](logs/docker.md) §4)
 
-### 5.3 디렉터리에 `chmod 644` 후 `ls`가 Permission denied
+### 5.2 디렉터리에 `chmod 644` 후 `ls`가 Permission denied
 
 - **문제:** 디렉터리에 실행 비트가 없어 목록 조회가 막힘.
 - **원인 가설:** 디렉터리의 `x`는 **내부 진입·목록 탐색**에 필요.
@@ -280,21 +271,19 @@ docker run -it --name ubuntu2 -v my-vol:/app/data ubuntu bash
 
 ### 7.11 Git 설정 및 GitHub 연동
 
-민감정보는 마스킹했습니다. 실제 로컬에서는 본인 이름·이메일이 설정되어 있습니다.
 
 ```bash
-git config --global user.name "Your Name"
-git config --global user.email "***@***"
-git config --global init.defaultBranch main
-git config --list --show-origin
-# file:.../gitconfig  user.name=Your Name
-# file:.../gitconfig  user.email=***@***
-# file:.../gitconfig  init.defaultbranch=main
-# file:.../.git/config remote.origin.url=https://github.com/Daeung-03/Codyssey1st_rookie.git
+hugeung@gimdaeung-ui-MacBookAir Codyssey1st_rookie % git config --list
+credential.helper=osxkeychain
+user.name=Daeung-03
+user.email=eodnd74@yonsei.ac.kr
+credential.helper=store
+
+hugeung@gimdaeung-ui-MacBookAir Codyssey1st_rookie % git remote -v
+origin  https://github.com/Daeung-03/Codyssey_rookieQ1.git (fetch)
+origin  https://github.com/Daeung-03/Codyssey_rookieQ1.git (push)
 ```
 
-- **GitHub 연동:** 위 원격 URL로 push/pull 가능한 상태. VS Code에서 GitHub 계정 로그인 후 동일 저장소를 클론·연동 완료.
-- **스크린샷:** 과제 제출 시 VS Code 계정/원격 연결 화면을 캡처해 저장소의 `docs/`(또는 `assets/`)에 넣고, 이 README에 `![VS Code GitHub](docs/vscode-github.png)` 형태로 링크하면 명세의 “첨부”를 충족하기 쉽습니다. **토큰·비밀번호·개인키는 이미지에 노출하지 않습니다.**
 
 ---
 
